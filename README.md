@@ -3,7 +3,7 @@
 ## About
 This repository contains my Database Management System (DBMS) laboratory experiments completed as part of my B.Tech CSE (AI/ML).
 
-The repository includes SQL queries, database creation, constraints, joins, views, stored procedures, triggers, and other DBMS concepts.
+The repository includes SQL queries, database creation, constraints, joins, views, stored procedures, triggers, normalization, and other DBMS concepts.
 
 ## Experiments
 
@@ -15,6 +15,7 @@ The repository includes SQL queries, database creation, constraints, joins, view
 | Experiment 4 | Joins, Subqueries, Set Operations, and EXPLAIN |
 | Experiment 5 | Views, Updatability, and Recursive CTEs |
 | Experiment 6 | Stored Procedures, Salary Validation, and Audit Triggers |
+| Experiment 7 | Functional Dependencies, Normalization, Lossless Join, and BCNF |
 
 ## Technologies Used
 - MySQL
