@@ -16,6 +16,7 @@ The repository includes SQL queries, database creation, constraints, joins, view
 | Experiment 5 | Views, Updatability, and Recursive CTEs |
 | Experiment 6 | Stored Procedures, Salary Validation, and Audit Triggers |
 | Experiment 7 | Functional Dependencies, Normalization, Lossless Join, and BCNF |
+| Experiment 8 | Transaction Management, Isolation Levels, and Concurrency Control |
 
 ## Technologies Used
 - MySQL
