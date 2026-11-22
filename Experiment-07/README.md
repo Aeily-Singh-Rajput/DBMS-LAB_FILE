@@ -243,8 +243,5 @@ In the final relations, every determinant in the stated non-trivial functional d
 
 Therefore, all the final relations satisfy Boyce-Codd Normal Form (BCNF) under the stated functional dependencies. No further decomposition is required.
 
-## Complete SQL Source Code
-The complete SQL script, in the same sequence as the practical, is also available in [Experiment_7.sql](Experiment_7.sql).
-
 ## Conclusion
 The denormalized Sales table was converted into 1NF, 2NF, and 3NF relations. The normalized data was displayed using JOIN queries, and SQL queries were used to examine lossless join and dependency preservation. The final relations were checked for BCNF under the stated functional dependencies.
