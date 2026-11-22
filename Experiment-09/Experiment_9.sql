@@ -1,0 +1,105 @@
+-- CREATE RAILWAY BOOKING TABLE
+
+CREATE TABLE Railway_Booking (
+    Booking_ID INT PRIMARY KEY,
+    Passenger_Name VARCHAR(50),
+    Train_No INT,
+    Journey_Date DATE,
+    From_City VARCHAR(50),
+    To_City VARCHAR(50),
+    Seat_No INT
+);
+
+-- INSERT 5000 RECORDS
+
+INSERT INTO Railway_Booking
+(Booking_ID, Passenger_Name, Train_No,
+ Journey_Date, From_City, To_City, Seat_No)
+
+SELECT
+    n + 1,
+    CONCAT('Passenger', n + 1),
+    1000 + MOD(n, 50),
+    DATE_ADD('2026-01-01', INTERVAL MOD(n, 30) DAY),
+    'Delhi',
+    'Mumbai',
+    1 + MOD(n, 100)
+FROM (
+    SELECT
+        d0.d + d1.d * 10 + d2.d * 100 + d3.d * 1000 +
+        d4.d * 10000 AS n
+    FROM
+        (SELECT 0 d UNION ALL SELECT 1 UNION ALL SELECT 2
+         UNION ALL SELECT 3 UNION ALL SELECT 4
+         UNION ALL SELECT 5 UNION ALL SELECT 6
+         UNION ALL SELECT 7 UNION ALL SELECT 8
+         UNION ALL SELECT 9) d0
+    CROSS JOIN
+        (SELECT 0 d UNION ALL SELECT 1 UNION ALL SELECT 2
+         UNION ALL SELECT 3 UNION ALL SELECT 4
+         UNION ALL SELECT 5 UNION ALL SELECT 6
+         UNION ALL SELECT 7 UNION ALL SELECT 8
+         UNION ALL SELECT 9) d1
+    CROSS JOIN
+        (SELECT 0 d UNION ALL SELECT 1 UNION ALL SELECT 2
+         UNION ALL SELECT 3 UNION ALL SELECT 4
+         UNION ALL SELECT 5 UNION ALL SELECT 6
+         UNION ALL SELECT 7 UNION ALL SELECT 8
+         UNION ALL SELECT 9) d2
+    CROSS JOIN
+        (SELECT 0 d UNION ALL SELECT 1 UNION ALL SELECT 2
+         UNION ALL SELECT 3 UNION ALL SELECT 4
+         UNION ALL SELECT 5 UNION ALL SELECT 6
+         UNION ALL SELECT 7 UNION ALL SELECT 8
+         UNION ALL SELECT 9) d3
+    CROSS JOIN
+        (SELECT 0 d UNION ALL SELECT 1 UNION ALL SELECT 2
+         UNION ALL SELECT 3 UNION ALL SELECT 4
+         UNION ALL SELECT 5 UNION ALL SELECT 6
+         UNION ALL SELECT 7 UNION ALL SELECT 8
+         UNION ALL SELECT 9) d4
+) AS numbers
+WHERE n < 5000;
+
+-- VERIFY TOTAL RECORDS
+
+SELECT COUNT(*) AS Total_Records
+FROM Railway_Booking;
+
+-- CHECK QUERY PERFORMANCE BEFORE INDEXING
+
+EXPLAIN
+SELECT * FROM Railway_Booking
+WHERE Train_No = 1005;
+
+SELECT COUNT(*) AS Total_Bookings
+FROM Railway_Booking
+WHERE Train_No = 1005;
+
+-- CREATE SINGLE INDEX
+
+CREATE INDEX idx_train_no
+ON Railway_Booking(Train_No);
+
+-- CHECK PERFORMANCE AFTER SINGLE INDEX
+
+EXPLAIN
+SELECT * FROM Railway_Booking
+WHERE Train_No = 1005;
+
+-- CREATE COMPOSITE INDEX
+
+CREATE INDEX idx_train_date
+ON Railway_Booking(Train_No, Journey_Date);
+
+-- CHECK PERFORMANCE AFTER COMPOSITE INDEX
+
+EXPLAIN
+SELECT * FROM Railway_Booking
+WHERE Train_No = 1005
+AND Journey_Date = '2026-01-06';
+
+SELECT COUNT(*) AS Total_Bookings
+FROM Railway_Booking
+WHERE Train_No = 1005
+AND Journey_Date = '2026-01-06';
