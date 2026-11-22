@@ -205,13 +205,3 @@ GROUP BY product_id;
 SELECT order_id, product_id, COUNT(DISTINCT quantity)
 FROM OrderDetails
 GROUP BY order_id, product_id;
-
-
--- BCNF VERIFICATION
--- In the final relations, every determinant in the stated non-trivial functional dependencies is a candidate key.
--- CUSTOMERS: customer_id -> customer_name
--- ORDERS_3NF: order_id -> order_date, customer_id
--- PRODUCTS: product_id -> product_name, price
--- ORDERDETAILS: (order_id, product_id) -> quantity
--- Therefore, all the final relations satisfy Boyce-Codd Normal Form (BCNF) under the stated functional dependencies.
--- No further decomposition is required.
