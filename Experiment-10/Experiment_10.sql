@@ -1,0 +1,162 @@
+-- CREATE SALES RECORDS TABLE
+
+CREATE TABLE Sales_Records (
+    Sale_ID INT PRIMARY KEY,
+    Customer_ID INT,
+    Product_ID INT,
+    Category VARCHAR(50),
+    Sale_Date DATE,
+    Quantity INT,
+    Unit_Price DECIMAL(10,2),
+    City VARCHAR(50)
+);
+
+-- GENERATE DATASET WITH 10,000 ROWS
+
+INSERT INTO Sales_Records
+(Sale_ID, Customer_ID, Product_ID, Category,
+ Sale_Date, Quantity, Unit_Price, City)
+
+SELECT
+    n + 1,
+    1 + MOD(n, 1000),
+    1 + MOD(n, 100),
+    CASE
+        WHEN MOD(n, 4) = 0 THEN 'Electronics'
+        WHEN MOD(n, 4) = 1 THEN 'Clothing'
+        WHEN MOD(n, 4) = 2 THEN 'Furniture'
+        ELSE 'Books'
+    END,
+    DATE_ADD('2025-01-01', INTERVAL MOD(n, 730) DAY),
+    1 + MOD(n, 10),
+    100 + MOD(n, 500),
+    CASE
+        WHEN MOD(n, 5) = 0 THEN 'Delhi'
+        WHEN MOD(n, 5) = 1 THEN 'Mumbai'
+        WHEN MOD(n, 5) = 2 THEN 'Kanpur'
+        WHEN MOD(n, 5) = 3 THEN 'Lucknow'
+        ELSE 'Jaipur'
+    END
+FROM (
+    SELECT
+        d0.d + d1.d * 10 + d2.d * 100
+        + d3.d * 1000 AS n
+    FROM
+        (SELECT 0 d UNION ALL SELECT 1 UNION ALL SELECT 2
+         UNION ALL SELECT 3 UNION ALL SELECT 4
+         UNION ALL SELECT 5 UNION ALL SELECT 6
+         UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) d0
+    CROSS JOIN
+        (SELECT 0 d UNION ALL SELECT 1 UNION ALL SELECT 2
+         UNION ALL SELECT 3 UNION ALL SELECT 4
+         UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7
+         UNION ALL SELECT 8 UNION ALL SELECT 9) d1
+    CROSS JOIN
+        (SELECT 0 d UNION ALL SELECT 1 UNION ALL SELECT 2
+         UNION ALL SELECT 3 UNION ALL SELECT 4
+         UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7
+         UNION ALL SELECT 8 UNION ALL SELECT 9) d2
+    CROSS JOIN
+        (SELECT 0 d UNION ALL SELECT 1 UNION ALL SELECT 2
+         UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5
+         UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8
+         UNION ALL SELECT 9) d3
+) AS numbers;
+
+-- VERIFY TOTAL NUMBER OF ROWS
+
+SELECT COUNT(*) AS Total_Records
+FROM Sales_Records;
+
+-- WRITE FIVE SLOW QUERIES BEFORE OPTIMIZATION
+
+-- 1: SEARCH CUSTOMER RECORDS
+
+EXPLAIN
+SELECT *
+FROM Sales_Records
+WHERE Customer_ID = 106;
+
+-- 2: SEARCH SALES BY YEAR
+
+EXPLAIN
+SELECT *
+FROM Sales_Records
+WHERE YEAR(Sale_Date) = 2025;
+
+-- 3: SEARCH CITY AND CATEGORY
+
+EXPLAIN
+SELECT *
+FROM Sales_Records
+WHERE City = 'Delhi'
+AND Category = 'Electronics';
+
+-- 4: GROUP SALES BY PRODUCT
+
+EXPLAIN
+SELECT Product_ID, COUNT(*) AS Total_Sales
+FROM Sales_Records
+GROUP BY Product_ID;
+
+-- 5: DISPLAY LATEST SALES
+
+EXPLAIN
+SELECT *
+FROM Sales_Records
+ORDER BY Sale_Date DESC
+LIMIT 10;
+
+-- OPTIMIZE QUERIES USING INDEXING
+
+CREATE INDEX idx_customer
+ON Sales_Records(Customer_ID);
+
+CREATE INDEX idx_date
+ON Sales_Records(Sale_Date);
+
+CREATE INDEX idx_city_category
+ON Sales_Records(City, Category);
+
+CREATE INDEX idx_product
+ON Sales_Records(Product_ID);
+
+-- EXECUTE OPTIMIZED QUERIES
+
+-- 1: OPTIMIZED CUSTOMER SEARCH
+
+EXPLAIN
+SELECT *
+FROM Sales_Records
+WHERE Customer_ID = 106;
+
+-- 2: OPTIMIZED SALES BY YEAR
+
+EXPLAIN
+SELECT *
+FROM Sales_Records
+WHERE Sale_Date >= '2025-01-01'
+AND Sale_Date < '2026-01-01';
+
+-- 3: OPTIMIZED CITY AND CATEGORY SEARCH
+
+EXPLAIN
+SELECT *
+FROM Sales_Records
+WHERE City = 'Delhi'
+AND Category = 'Electronics';
+
+-- 4: OPTIMIZED PRODUCT GROUPING
+
+EXPLAIN
+SELECT Product_ID, COUNT(*) AS Total_Sales
+FROM Sales_Records
+GROUP BY Product_ID;
+
+-- 5: OPTIMIZED LATEST SALES
+
+EXPLAIN
+SELECT *
+FROM Sales_Records
+ORDER BY Sale_Date DESC
+LIMIT 10;
