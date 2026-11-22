@@ -1,0 +1,140 @@
+-- CREATE BANKING TABLE
+
+CREATE TABLE Bank_Account (
+    Account_No INT PRIMARY KEY,
+    Account_Holder VARCHAR(50),
+    Balance DECIMAL(10,2)
+);
+
+INSERT INTO Bank_Account VALUES
+(101, 'Aman', 10000),
+(102, 'Rahul', 8000),
+(103, 'Priya', 12000);
+
+SELECT * FROM Bank_Account;
+
+-- BEGIN AND COMMIT TRANSACTION
+
+BEGIN;
+
+UPDATE Bank_Account
+SET Balance = Balance - 2000
+WHERE Account_No = 101;
+
+UPDATE Bank_Account
+SET Balance = Balance + 2000
+WHERE Account_No = 102;
+
+COMMIT;
+
+SELECT * FROM Bank_Account;
+
+-- ROLLBACK TRANSACTION
+
+BEGIN;
+
+UPDATE Bank_Account
+SET Balance = Balance - 1000
+WHERE Account_No = 101;
+
+ROLLBACK;
+
+SELECT * FROM Bank_Account;
+
+-- SAVEPOINT AND PARTIAL ROLLBACK
+
+BEGIN;
+
+UPDATE Bank_Account
+SET Balance = Balance - 1000
+WHERE Account_No = 101;
+
+SAVEPOINT sp1;
+
+UPDATE Bank_Account
+SET Balance = Balance + 1000
+WHERE Account_No = 103;
+
+ROLLBACK TO SAVEPOINT sp1;
+
+COMMIT;
+
+SELECT * FROM Bank_Account;
+
+-- DEMONSTRATE ISOLATION LEVELS
+
+-- 1. READ UNCOMMITTED
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+START TRANSACTION;
+
+SELECT * FROM Bank_Account;
+
+COMMIT;
+
+-- 2. READ COMMITTED
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+
+START TRANSACTION;
+
+SELECT * FROM Bank_Account;
+
+COMMIT;
+
+-- 3. REPEATABLE READ
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
+START TRANSACTION;
+
+SELECT * FROM Bank_Account;
+
+COMMIT;
+
+-- 4. SERIALIZABLE
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
+START TRANSACTION;
+
+SELECT * FROM Bank_Account;
+
+COMMIT;
+
+-- DEMONSTRATE CONCURRENCY USING TWO SESSIONS
+
+-- SESSION 1:
+BEGIN;
+
+UPDATE Bank_Account
+SET Balance = Balance - 500
+WHERE Account_No = 101;
+
+-- SESSION 2:
+BEGIN;
+
+SELECT * FROM Bank_Account
+WHERE Account_No = 101;
+
+COMMIT;
+
+-- SESSION 1:
+COMMIT;
+
+-- SIMULATE PARTIAL FAILURE
+
+BEGIN;
+
+UPDATE Bank_Account
+SET Balance = Balance - 500
+WHERE Account_No = 101;
+
+SAVEPOINT transfer_point;
+
+UPDATE Bank_Account
+SET Balance = Balance + 500
+WHERE Account_No = 102;
+
+ROLLBACK TO SAVEPOINT transfer_point;
+
+COMMIT;
+
+SELECT * FROM Bank_Account;
